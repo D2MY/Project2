@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block profilenav %}
+    {% if is_switch %}
+    <a class="nav-item px-3 py-2" href="{{ path('profile') }}?_switch_user=_exit">Switch user</a>
+    {% endif %}
+    <a class="nav-item px-3 py-2" href="{{ path('composition_create') }}">Composition create</a>
+    <a class="nav-item px-3 py-2" href="{{ path('favourites') }}">Favourites</a>
+    {% if 'ROLE_ADMIN' in roles %}
+    <a class="nav-item px-3 py-2" href="{{ path('admin') }}">Admin panel</a>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column">
+        {% for label, messages in app.flashes(['success', 'error']) %}
+            {% for message in messages %}
+                <div class="flash align-self-center mt-3">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <h1 class="align-self-center my-3">Your compositions</h1>
+        {% for composition in compositions %}
+        <div class="composition-container d-flex flex-column">
+            <p class="align-self-center">
+                <a href="{{ path('composition', {id: composition.0.id}) }}">{{ composition.0.title }}</a>
+                <a href="{{ path('composition_edit', {id: composition.0.id}) }}" style="font-size: 16px">Edit <img src="{{ asset('img/edit.png') }}" width="20px" height="20px" style="margin-bottom: 2px"></a>
+                <a href="{{ path('composition_delete', {id: composition.0.id}) }}" style="font-size: 16px">Delete <img src="{{ asset('img/delete.png') }}" width="20px" height="20px" style="margin-bottom: 6px"></a></p>
+            <p>Fandom: {{ composition.name }}</p>
+            <p>Description: {{ composition.0.description }}</p>
+        </div>
+            {% else %}
+            <p class="align-self-center my-3">No compositions</p>
+        {% endfor %}
+    </div>
+{% endblock %}

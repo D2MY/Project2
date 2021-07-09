@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Composition{% endblock %}
+
+{% block favouritebtn %}
+    {% if is_favourite %}
+        <a class="nav-item px-3 py-2" href="{{ path('composition_delete_from_favourite', {id: composition.id}) }}">Remove from favourite</a>
+    {% else %}
+        <a class="nav-item px-3 py-2" href="{{ path('composition_add_to_favourite', {id: composition.id}) }}">Add to favourite</a>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column m-5 composition-container">
+        <h1 class="align-self-center">{{ composition.title }}</h1>
+        <p class="fw-bold">Author: {{ author.firstName }} {{ author.secondName }}</p>
+        <p class="fw-bold">Fandom: {{ composition.fandom.name }}</p>
+        <p class="my-4">Description: {{ composition.description }}</p>
+        <p>{{ composition.text }}</p>
+    </div>
+
+<div class="d-flex flex-column mx-5">
+    <p class="fw-bold">{% if composition_average_rate %}Average rate - {{ composition_average_rate }}{% else %}No rates{% endif %}</p>
+
+    <div class="stars-container mb-3">
+        {% for i in 1..5 %}
+            <a href="{{ path('composition_rate', {id: composition.id, rate: loop.index}) }}" class="stars {% if loop.index <= rate.rate %}fild{% endif %}">★</a>
+        {% endfor %}
+    </div>
+
+    {% for comment in comments %}
+    <div class="comment-container p-2 m-2">
+        <p class="comment" data-date="{{ comment.0.createdAt|date }}">{{ comment.firstName }} {{ comment.secondName }}</p>
+        <p>{{ comment.0.text }}</p>
+    </div>
+    {% endfor %}
+    {% if app.user %}
+        {{ form_start(form, {'attr': {'class': 'd-flex flex-column'}}) }}
+        {{ form_row(form.text) }}
+        <button type="submit" class="btn btn-primary align-self-center my-4">Create comment</button>
+        {{ form_end(form) }}
+    {% endif %}
+</div>
+{% endblock %}
