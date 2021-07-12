@@ -11,6 +11,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 
@@ -21,15 +22,17 @@ class AdminController extends AbstractController
     protected UserRepository $userRepository;
     protected EntityManagerInterface $em;
     protected AdminService $adminService;
+    protected SessionInterface $session;
 
     public function __construct(TokenStorageInterface $tokenStorage, Security $security, UserRepository $userRepository,
-                                EntityManagerInterface $em, AdminService $adminService)
+                                EntityManagerInterface $em, AdminService $adminService, SessionInterface $session)
     {
         $this->tokenStorage = $tokenStorage;
         $this->security = $security;
         $this->userRepository = $userRepository;
         $this->em = $em;
         $this->adminService = $adminService;
+        $this->session = $session;
     }
 
     #[Route('/admin', name: 'admin')]
@@ -51,10 +54,13 @@ class AdminController extends AbstractController
     public function editUser(int $id): Response
     {
         $user = $this->userRepository->find($id);
+        if (!$user) {
+            $this->redirectToRoute('admin');
+        }
         $user = $this->adminService->changeRole($user);
-
         $this->em->persist($user);
         $this->em->flush();
+        $this->session->getFlashBag()->add('', 'User edited successfully');
 
         return $this->redirectToRoute('admin');
     }
@@ -65,6 +71,7 @@ class AdminController extends AbstractController
         $user = $this->userRepository->find($id);
         $this->em->remove($user);
         $this->em->flush();
+        $this->session->getFlashBag()->add('', 'User deleted successfully');
 
         return $this->redirectToRoute('admin');
     }

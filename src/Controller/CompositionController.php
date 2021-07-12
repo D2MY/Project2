@@ -108,7 +108,7 @@ class CompositionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->compositionService->compositionCreate($form->getData(), $user);
             $session = new Session();
-            $session->getFlashBag()->add('success', 'Composition created successfully');
+            $session->getFlashBag()->add('', 'Composition created successfully');
             return $this->redirectToRoute('profile');
         }
 
@@ -152,7 +152,7 @@ class CompositionController extends AbstractController
         $this->em->remove($composition);
         $this->em->flush();
         $session = new Session();
-        $session->getFlashBag()->add('success', 'Composition deleted successfully');
+        $session->getFlashBag()->add('', 'Composition deleted successfully');
 
         return $this->redirectToRoute('profile');
     }

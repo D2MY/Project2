@@ -15,12 +15,10 @@
 
 {% block body %}
     <div class="d-flex flex-column">
-        {% for label, messages in app.flashes(['success', 'error']) %}
-            {% for message in messages %}
+        {% for flash in app.flashes() %}
                 <div class="flash align-self-center mt-3">
-                    {{ message }}
+                    {{ flash.message }}
                 </div>
-            {% endfor %}
         {% endfor %}
         <h1 class="align-self-center my-3">Your compositions</h1>
         {% for composition in compositions %}

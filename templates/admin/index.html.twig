@@ -3,6 +3,12 @@
 {% block title %}Admin{% endblock %}
 
 {% block body %}
+<div class="d-flex flex-column">
+    {% for flash in app.flashes() %}
+        <div class="flash align-self-center mt-3">
+            {{ flash.0 }}
+        </div>
+    {% endfor %}
 <div class="admin-container pb-0">
     <div class="d-grid">
         <div class="d-grid user-row">
@@ -30,5 +36,6 @@
     {% endfor %}
     {{ knp_pagination_render(users) }}
     </div>
+</div>
 </div>
 {% endblock %}
