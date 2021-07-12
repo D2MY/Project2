@@ -42,7 +42,7 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         $lastUpdatedCompositions = $this->compositionRepository->lastUpdated(3);
-        $moreRated = $lastUpdatedCompositions;
+        $moreRated = $this->compositionRepository->moreRated(3);
 
         return $this->render('home/index.html.twig', [
             'last_updated_compositions' => $lastUpdatedCompositions,

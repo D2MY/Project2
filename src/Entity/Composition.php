@@ -50,9 +50,19 @@ class Composition
     private Fandom $fandom;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=false)
      */
     private \DateTime $updatedAt;
+
+    /**
+     * @ORM\Column(type="float", nullable=false)
+     */
+    private float $averageRate;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=false)
+     */
+    private \DateTime $lastRateUpdate;
 
     public function getId(): ?int
     {
@@ -127,6 +137,30 @@ class Composition
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getAverageRate(): ?float
+    {
+        return $this->averageRate;
+    }
+
+    public function setAverageRate(?float $averageRate): self
+    {
+        $this->averageRate = $averageRate;
+
+        return $this;
+    }
+
+    public function getLastRateUpdate(): ?\DateTimeInterface
+    {
+        return $this->lastRateUpdate;
+    }
+
+    public function setLastRateUpdate(?\DateTimeInterface $lastRateUpdate): self
+    {
+        $this->lastRateUpdate = $lastRateUpdate;
 
         return $this;
     }

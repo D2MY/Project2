@@ -42,6 +42,17 @@ class CompositionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function moreRated(int $limit) :array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.id, c.title, c.description, f.name')
+            ->leftJoin(Fandom::class,'f', 'WITH', 'f.id = c.fandom')
+            ->orderBy('c.averageRate', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return CompositionService[] Returns an array of CompositionService objects
     //  */

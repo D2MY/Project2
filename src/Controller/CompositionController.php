@@ -62,8 +62,7 @@ class CompositionController extends AbstractController
         $user = $this->getUser();
         $user? $isFavourite = $this->favouriteRepository->isFavouriteCompositionForUser($user, $composition):$isFavourite = false;
         $rate = $this->ratesService->getUserRateForComposition($user, $composition);
-        $rates = $this->ratesRepository->getRatesForComposition($composition);
-        $compositionAverageRate = $this->compositionService->compositionAverageRate($rates);
+        $compositionAverageRate = $this->compositionService->compositionAverageRate($composition);
         $comments = $this->commentRepository->getCommentsForComposition($id);
         $author = $this->userRepository->find($composition->getUser());
 
