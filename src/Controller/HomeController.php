@@ -53,9 +53,7 @@ class HomeController extends AbstractController
     #[Route('/profile', name: 'profile')]
     public function profile(PaginatorInterface $paginator, Request $request): Response
     {
-        $user = $this->getUser();
-        $roles = $user->getRoles();
-        $query = $this->compositionRepository->getUserCompositionsWithFandoms($user->getId());
+        $query = $this->compositionRepository->getUserCompositionsWithFandoms($this->getUser()->getId());
         $compositions = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
@@ -67,7 +65,6 @@ class HomeController extends AbstractController
 
         return $this->render('home/profile.html.twig', [
             'compositions' => $compositions,
-            'roles' => $roles,
             'is_switch' => $isSwitch
         ]);
     }
