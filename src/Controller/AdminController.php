@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\AdminService;
 use App\Service\Security;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +19,17 @@ class AdminController extends AbstractController
     protected TokenStorageInterface $tokenStorage;
     protected Security $security;
     protected UserRepository $userRepository;
+    protected EntityManagerInterface $em;
+    protected AdminService $adminService;
 
-    public function __construct(TokenStorageInterface $tokenStorage, Security $security,
-                                UserRepository $userRepository)
+    public function __construct(TokenStorageInterface $tokenStorage, Security $security, UserRepository $userRepository,
+                                EntityManagerInterface $em, AdminService $adminService)
     {
         $this->tokenStorage = $tokenStorage;
         $this->security = $security;
         $this->userRepository = $userRepository;
+        $this->em = $em;
+        $this->adminService = $adminService;
     }
 
     #[Route('/admin', name: 'admin')]
@@ -45,11 +51,10 @@ class AdminController extends AbstractController
     public function editUser(int $id): Response
     {
         $user = $this->userRepository->find($id);
-        in_array('ROLE_ADMIN', $user->getRoles(), true)?$user->setRoles(['ROLE_USER']):$user->setRoles(['ROLE_ADMIN']);
+        $user = $this->adminService->changeRole($user);
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($user);
-        $entityManager->flush();
+        $this->em->persist($user);
+        $this->em->flush();
 
         return $this->redirectToRoute('admin');
     }
@@ -58,9 +63,8 @@ class AdminController extends AbstractController
     public function deleteUser(int $id): Response
     {
         $user = $this->userRepository->find($id);
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($user);
-        $entityManager->flush();
+        $this->em->remove($user);
+        $this->em->flush();
 
         return $this->redirectToRoute('admin');
     }

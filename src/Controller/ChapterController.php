@@ -69,15 +69,13 @@ class ChapterController extends AbstractController
         }
         $composition = $this->compositionRepository->find($chapter->getComposition());
         $this->denyAccessUnlessGranted(CustomVoter::CHAPTER_EDIT, $composition->getUser());
-        $chapter = $this->chapterRepository->find($id);
-        if (!$chapter) {
-            throw new NotFoundHttpException('Chapter not found');
-        }
         $form = $this->createForm(CreateChapterType::class, $chapter);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->chapterService->chapterEdit($form->getData());
+            $chapter = $form->getData();
+            $this->em->persist($chapter);
+            $this->em->flush();
             return $this->redirectToRoute('composition_edit', ['id' => $chapter->getComposition()->getId()]);
         }
 
@@ -95,10 +93,6 @@ class ChapterController extends AbstractController
         }
         $composition = $this->compositionRepository->find($chapter->getComposition());
         $this->denyAccessUnlessGranted(CustomVoter::CHAPTER_DELETE, $composition->getUser());
-        $chapter = $this->chapterRepository->find($id);
-        if (!$chapter) {
-            throw new NotFoundHttpException('Chapter not found');
-        }
         $this->em->remove($chapter);
         $this->em->flush();
         return $this->redirectToRoute('composition_edit', ['id' => $chapter->getComposition()->getId()]);

@@ -27,10 +27,4 @@ class ChapterService
         $this->em->persist($chapter);
         $this->em->flush();
     }
-
-    public function chapterEdit(Chapter $chapter) :void
-    {
-        $this->em->persist($chapter);
-        $this->em->flush();
-    }
 }
