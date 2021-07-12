@@ -11,10 +11,13 @@ class CustomVoter extends Voter
 {
     public const EDIT = 'edit';
     public const DELETE = 'delete';
+    public const CHAPTER_CREATE = 'chapter create';
+    public const CHAPTER_EDIT = 'chapter edit';
+    public const CHAPTER_DELETE = 'chapter delete';
 
     protected function supports(string $attribute, $subject): bool
     {
-        return in_array($attribute, [self::DELETE, self::EDIT], true)
+        return in_array($attribute, [self::DELETE, self::EDIT, self::CHAPTER_CREATE, self::CHAPTER_EDIT, self::CHAPTER_DELETE], true)
             && $subject instanceof User;
     }
 
@@ -31,6 +34,12 @@ class CustomVoter extends Voter
                 return $this->canEdit($subject, $user);
             case self::DELETE:
                 return $this->canDelete($subject, $user);
+            case self::CHAPTER_CREATE:
+                return $this->canChapterCreate($subject, $user);
+            case self::CHAPTER_EDIT:
+                return $this->canChapterEdit($subject, $user);
+            case self::CHAPTER_DELETE:
+                return $this->canChapterDelete($subject, $user);
         }
 
         return false;
@@ -38,11 +47,26 @@ class CustomVoter extends Voter
 
     private function canEdit($subject, $user): bool
     {
-        return $subject === $user || in_array('ROLE_ADMIN', $user->getRoles(), true);
+        return $subject === $user;
     }
 
     private function canDelete($subject, $user): bool
     {
-        return $subject === $user || in_array('ROLE_ADMIN', $user->getRoles(), true);
+        return $subject === $user;
+    }
+
+    private function canChapterCreate($subject, $user): bool
+    {
+        return $subject === $user;
+    }
+
+    private function canChapterEdit($subject, $user): bool
+    {
+        return $subject === $user;
+    }
+
+    private function canChapterDelete($subject, $user): bool
+    {
+        return $subject === $user;
     }
 }

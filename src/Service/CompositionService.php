@@ -39,9 +39,13 @@ class CompositionService
 
     public function compositionAverageRate(Composition $composition) :float
     {
-        if (date_diff(new \DateTime(), $composition->getLastRateUpdate(), )->i > 15) {
+        $diff = date_diff(new \DateTime(), $composition->getLastRateUpdate(), true);
+        if ($diff->y || $diff->m || $diff->d || $diff->h || $diff->i > 15) {
             $rates = $this->rateRepository->findByComposition($composition);
             $averageRate = 0;
+            if (count($rates) === 0) {
+                return $averageRate;
+            }
             foreach ($rates as $rate) {
                 $averageRate += $rate->getRate();
             }

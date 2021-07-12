@@ -114,3 +114,7 @@ nav {
     transition: 1s;
     opacity: 0;
 }
+
+.chapter-grid {
+    grid-template-columns: 250px 150px 150px;
+}

@@ -27,7 +27,6 @@ class CreateCompositionType extends AbstractType
         $builder
             ->add('title', TextType::class, ['label' => 'Title'])
             ->add('description', TextType::class, ['label' => 'Description'])
-            ->add('text', TextareaType::class, ['label' => 'Text'])
             ->add('fandom', ChoiceType::class,[
                 'choices' => $fandoms,
                 'choice_label' => function ($choice) {

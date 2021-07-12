@@ -18,7 +18,16 @@
         <p class="fw-bold">Author: {{ author.firstName }} {{ author.secondName }}</p>
         <p class="fw-bold">Fandom: {{ composition.fandom.name }}</p>
         <p class="my-4">Description: {{ composition.description }}</p>
-        <p>{{ composition.text|markdown_to_html }}</p>
+    </div>
+    <div class="d-flex flex-column m-5 composition-container">
+        {% for chapter in chapters %}
+        <h1 class="align-self-center">{{ chapter.title }}</h1>
+        <p>{{ chapter.text|markdown_to_html }}</p>
+        {{ knp_pagination_render(chapters) }}
+            {% if app.user %}<a class="align-self-start" href="{{ path('chapter_like', {id: chapter.id}) }}"><span {% if chapter.like_id %}style="color: red"{% endif %}>♥</span></a>{% endif %}
+        {% else %}
+        <h1 class="align-self-center">No chapters</h1>
+        {% endfor %}
     </div>
 
 <div class="d-flex flex-column mx-5">

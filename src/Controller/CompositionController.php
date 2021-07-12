@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Composition;
+use App\Repository\ChapterRepository;
 use App\Repository\CommentRepository;
 use App\Repository\CompositionRepository;
 use App\Repository\FavouriteRepository;
@@ -18,6 +19,7 @@ use App\Form\CommentType;
 use App\Form\CreateCompositionType;
 use App\Service\RatesService;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,13 +35,14 @@ class CompositionController extends AbstractController
     protected UserRepository $userRepository;
     protected CommentRepository $commentRepository;
     protected FavouriteRepository $favouriteRepository;
+    protected ChapterRepository $chapterRepository;
     protected RatesService $ratesService;
     protected CommentService $commentService;
     protected EntityManagerInterface $em;
 
     public function __construct(CompositionService $compositionService, CompositionRepository $compositionRepository, RatesRepository $ratesRepository,
                                 UserRepository $userRepository, CommentRepository $commentRepository, FavouriteRepository $favouriteRepository,
-                                RatesService $ratesService, CommentService $commentService, EntityManagerInterface $em)
+                                RatesService $ratesService, CommentService $commentService, EntityManagerInterface $em, ChapterRepository $chapterRepository)
     {
         $this->em = $em;
         $this->compositionService = $compositionService;
@@ -48,18 +51,25 @@ class CompositionController extends AbstractController
         $this->userRepository = $userRepository;
         $this->commentRepository = $commentRepository;
         $this->favouriteRepository = $favouriteRepository;
+        $this->chapterRepository = $chapterRepository;
         $this->ratesService = $ratesService;
         $this->commentService = $commentService;
     }
 
     #[Route('/composition/{id<\d+>?1}', name: 'composition')]
-    public function composition(int $id, Request $request) :Response
+    public function composition(int $id, Request $request, PaginatorInterface $paginator) :Response
     {
         $composition = $this->compositionRepository->find($id);
         if (!$composition) {
             throw new NotFoundHttpException('Composition not found');
         }
         $user = $this->getUser();
+        $query = $this->chapterRepository->getChaptersForComposition($composition, $user);
+        $chapters = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 1),
+        );
         $user? $isFavourite = $this->favouriteRepository->isFavouriteCompositionForUser($user, $composition):$isFavourite = false;
         $rate = $this->ratesService->getUserRateForComposition($user, $composition);
         $compositionAverageRate = $this->compositionService->compositionAverageRate($composition);
@@ -77,6 +87,7 @@ class CompositionController extends AbstractController
 
         return $this->render('composition/index.html.twig', [
             'composition' => $composition,
+            'chapters' => $chapters,
             'comments' => $comments,
             'author' => $author,
             'form' => $form->createView(),
@@ -104,6 +115,46 @@ class CompositionController extends AbstractController
         return $this->render('composition/create.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    #[Route('/edit/composition/{id<\d+>?1}', name: 'composition_edit')]
+    public function editComposition(int $id, Request $request) :Response
+    {
+        $composition = $this->compositionRepository->find($id);
+        if (!$composition) {
+            throw new NotFoundHttpException('Composition not found');
+        }
+        $chapters = $this->chapterRepository->findByComposition($composition);
+        $this->denyAccessUnlessGranted(CustomVoter::EDIT, $composition->getUser());
+        $form = $this->createForm(CreateCompositionType::class, $composition);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->compositionService->compositionEdit($composition);
+            return $this->redirectToRoute('composition', ['id' => $composition->getId()]);
+        }
+
+        return $this->render('composition/edit.html.twig', [
+            'composition' => $composition,
+            'chapters' => $chapters,
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route('/delete/composition/{id<\d+>?}', name: 'composition_delete')]
+    public function deleteComposition(int $id) :Response
+    {
+        $composition = $this->compositionRepository->find($id);
+        if (!$composition) {
+            throw new NotFoundHttpException('Composition not found');
+        }
+        $this->denyAccessUnlessGranted(CustomVoter::DELETE, $composition->getUser());
+        $this->em->remove($composition);
+        $this->em->flush();
+        $session = new Session();
+        $session->getFlashBag()->add('success', 'Composition deleted successfully');
+
+        return $this->redirectToRoute('profile');
     }
 
     #[Route('/add/favourite/{id<\d+>?}', name: 'composition_add_to_favourite')]
@@ -137,44 +188,6 @@ class CompositionController extends AbstractController
         }
 
         return $this->redirectToRoute('favourites');
-    }
-
-    #[Route('/delete/composition/{id<\d+>?}', name: 'composition_delete')]
-    public function deleteComposition(int $id) :Response
-    {
-        $composition = $this->compositionRepository->find($id);
-        if (!$composition) {
-            throw new NotFoundHttpException('Composition not found');
-        }
-        $this->denyAccessUnlessGranted(CustomVoter::DELETE, $composition->getUser());
-        $this->em->remove($composition);
-        $this->em->flush();
-        $session = new Session();
-        $session->getFlashBag()->add('success', 'Composition deleted successfully');
-
-        return $this->redirectToRoute('profile');
-    }
-
-    #[Route('/edit/composition/{id<\d+>?1}', name: 'composition_edit')]
-    public function editComposition(int $id, Request $request) :Response
-    {
-        $composition = $this->compositionRepository->find($id);
-        if (!$composition) {
-            throw new NotFoundHttpException('Composition not found');
-        }
-        $this->denyAccessUnlessGranted(CustomVoter::EDIT, $composition->getUser());
-        $form = $this->createForm(CreateCompositionType::class, $composition);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->compositionService->compositionEdit($composition);
-            return $this->redirectToRoute('composition', ['id' => $composition->getId()]);
-        }
-
-        return $this->render('composition/edit.html.twig', [
-            'composition' => $composition,
-            'form' => $form->createView()
-        ]);
     }
 
     #[Route('/rate/composition/{id<\d+>?}/{rate<\d+>?}', name: 'composition_rate')]

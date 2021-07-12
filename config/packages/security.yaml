@@ -50,4 +50,5 @@ security:
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/rate, roles: ROLE_USER }
         - { path: ^/favourites, roles: ROLE_USER }
+        - { path: ^/like, roles: ROLE_USER }
         - { path: ^/admin, roles: ROLE_ADMIN }

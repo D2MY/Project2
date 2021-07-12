@@ -3,7 +3,7 @@
 {% block title %}Edit composition{% endblock %}
 
 {% block body %}
-    <div class="flex">
+    <div class="flex d-flex flex-column">
     {{ form_start(form, {'attr':{'class':'d-flex flex-column m-5'}}) }}
 
     {{ form_label(form.title) }}
@@ -14,15 +14,19 @@
     {{ form_errors(form.description) }}
     {{ form_widget(form.description) }}
 
-    {{ form_label(form.text) }}
-    {{ form_errors(form.text) }}
-    {{ form_widget(form.text) }}
-
     {{ form_label(form.fandom) }}
     {{ form_errors(form.fandom) }}
     {{ form_widget(form.fandom) }}
 
     <button type="submit" class="btn btn-primary align-self-center mt-4">Edit composition</button>
     {{ form_end(form) }}
+        <div class="align-self-center d-flex flex-column">
+            {% for chapter in chapters %}
+            <div class="d-grid chapter-grid"><h2>{{ chapter.title }}</h2><a href="{{ path('chapter_edit', {id: chapter.id}) }}"><button class="btn btn-primary">Edit</button></a><a href="{{ path('chapter_delete', {id: chapter.id}) }}"><button class="btn btn-primary">Delete</button></a></div>
+            {% else %}
+            <h1 class="align-self-center">No chapters</h1>
+            {% endfor %}
+            </div>
+        <a class="align-self-center" href="{{ path('chapter_add', {id: app.request.get('id')}) }}"><button type="submit" class="btn btn-primary">Add chapter</button></a>
     </div>
 {% endblock %}

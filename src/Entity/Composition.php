@@ -31,12 +31,6 @@ class Composition
     private string $description;
 
     /**
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank
-     */
-    private string $text;
-
-    /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="compositions")
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
