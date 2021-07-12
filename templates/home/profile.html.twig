@@ -15,24 +15,21 @@
 
 {% block body %}
     <div class="d-flex flex-column">
-        {% for flash in app.flashes() %}
-                <div class="flash align-self-center mt-3">
-                    {{ flash.message }}
-                </div>
-        {% endfor %}
+
         <h1 class="align-self-center my-3">Your compositions</h1>
         {% for composition in compositions %}
         <div class="composition-container d-flex flex-column">
             <p class="align-self-center">
                 <a href="{{ path('composition', {id: composition.id}) }}">{{ composition.title }}</a>
                 <a href="{{ path('composition_edit', {id: composition.id}) }}" style="font-size: 16px">Edit <img src="{{ asset('img/edit.png') }}" width="20px" height="20px" style="margin-bottom: 2px"></a>
-                <a href="{{ path('composition_delete', {id: composition.id}) }}" style="font-size: 16px">Delete <img src="{{ asset('img/delete.png') }}" width="20px" height="20px" style="margin-bottom: 6px"></a></p>
+                <a href="{{ path('composition_delete', {id: composition.id}) }}" style="font-size: 16px">Delete <img src="{{ asset('img/delete.png') }}" width="20px" height="20px" style="margin-bottom: 6px"></a>
+            </p>
             <p>Fandom: {{ composition.name }}</p>
             <p>Description: {{ composition.description }}</p>
-            {{ knp_pagination_render(compositions) }}
         </div>
             {% else %}
             <p class="align-self-center my-3">No compositions</p>
         {% endfor %}
+        {{ knp_pagination_render(compositions) }}
     </div>
 {% endblock %}

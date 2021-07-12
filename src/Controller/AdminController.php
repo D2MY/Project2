@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\AdminService;
 use App\Service\Security;
@@ -55,7 +54,7 @@ class AdminController extends AbstractController
     {
         $user = $this->userRepository->find($id);
         if (!$user) {
-            $this->redirectToRoute('admin');
+            return $this->redirectToRoute('admin');
         }
         $user = $this->adminService->changeRole($user);
         $this->em->persist($user);

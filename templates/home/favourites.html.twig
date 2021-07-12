@@ -10,7 +10,7 @@
         <p class="fw-bold align-self-center"><a href="{{ path('composition', {id: favourite.composition_id}) }}">{{ favourite.title }}</a>
         <p>Fandom: {{ favourite.name }}</p>
         <p>Description: {{ favourite.description }}</p>
-        <a href="{{ path('composition_delete_from_favourite', {id: favourite.id}) }}">Delete from favourite</a>
+        <a href="{{ path('composition_delete_from_favourite', {id: favourite.composition_id}) }}">Delete from favourite</a>
     </div>
     {% else %}
         <p class="align-self-center">No favourites</p>
