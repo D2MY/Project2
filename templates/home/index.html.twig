@@ -7,17 +7,17 @@
     <div class="d-flex flex-column">
         <h2 class="align-self-center mb-5">Last updated</h2>
     {% for item in last_updated_compositions %}
-        <a class="align-self-center mb-2" href="{{ path('composition', {id: item.0.id}) }}">{{ item.0.title }}</a>
+        <a class="align-self-center mb-2" href="{{ path('composition', {id: item.id}) }}">{{ item.title }}</a>
         <p>Fandom: {{ item.name }}</p>
-        <p>{{ item.0.description }}</p>
+        <p>{{ item.description }}</p>
     {% endfor %}
     </div>
     <div class="d-flex flex-column">
         <h2 class="align-self-center mb-5">More rated</h2>
         {% for item in more_rated %}
-            <a class="align-self-center mb-2" href="{{ path('composition', {id: item.0.id}) }}">{{ item.0.title }}</a>
+            <a class="align-self-center mb-2" href="{{ path('composition', {id: item.id}) }}">{{ item.title }}</a>
             <p>Fandom: {{ item.name }}</p>
-            <p>{{ item.0.description }}</p>
+            <p>{{ item.description }}</p>
         {% endfor %}
     </div>
 </div>

@@ -20,21 +20,21 @@ class CompositionRepository extends ServiceEntityRepository
         parent::__construct($registry, Composition::class);
     }
 
-    public function getUserCompositionsWithFandoms(int $id) :array
+    public function getUserCompositionsWithFandoms(int $id)
     {
         return $this->createQueryBuilder('c')
-            ->select('c, f.name')
+            ->select('c.id, c.title, c.description, f.name')
             ->leftJoin(Fandom::class,'f', 'WITH', 'f.id = c.fandom')
             ->where('c.user = :id')
             ->setParameter('id', $id)
-            ->getQuery()
-            ->getResult();
+            ->orderBy('c.updatedAt', 'DESC')
+            ->getQuery();
     }
 
     public function lastUpdated(int $limit) :array
     {
         return $this->createQueryBuilder('c')
-            ->select('c, f.name')
+            ->select('c.id, c.title, c.description, f.name')
             ->leftJoin(Fandom::class,'f', 'WITH', 'f.id = c.fandom')
             ->orderBy('c.updatedAt', 'DESC')
             ->setMaxResults($limit)
@@ -43,7 +43,7 @@ class CompositionRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return Composition[] Returns an array of Composition objects
+    //  * @return CompositionService[] Returns an array of CompositionService objects
     //  */
     /*
     public function findByExampleField($value)
@@ -60,7 +60,7 @@ class CompositionRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Composition
+    public function findOneBySomeField($value): ?CompositionService
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.exampleField = :val')

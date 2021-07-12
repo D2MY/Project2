@@ -2,33 +2,39 @@ body {
     padding: 0;
     margin: 0;
     font-size: 28px;
+    background-color: var(--body-color);
+    color: var(--main-color);
 }
 
 a {
     text-decoration: none;
-    color: black;
+    color: var(--main-color);
+}
+
+a:hover {
+    color: var(--link-hover-color);
 }
 
 .composition-container, .admin-container {
-    border: 2px solid #eadfd9;
+    border: 2px solid var(--container-border-color);
     border-radius: 15px;
-    background-color: #ece6e2;
+    background-color: var(--container-color);
     margin: 20px 80px;
     padding: 15px;
 }
 
 .nav-bar {
     height: 70px;
-    background-color: #cb7836;
+    background-color: var(--nav-color);
 }
 
 .nav-item:hover {
-    color: black;
-    background-color: #bf6d2c;
+    color: var(--main-color);
+    background-color: var(--nav-item-hover);
 }
 
 .admin-container > .d-grid > .user-row:first-child {
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid var(--main-color);
 }
 
 .main-container {
@@ -36,6 +42,13 @@ a {
     grid-template-columns: repeat(2, 450px);
     gap: 50px;
     margin:100px calc(50% - 475px);
+    border: 2px solid var(--container-border-color);
+    border-radius: 15px;
+    background-color: var(--container-color);
+}
+
+.main-container > div {
+    padding: 15px;
 }
 
 .main-container a {
@@ -46,8 +59,12 @@ a {
     transform: translate(-50%, -50%);
 }
 
-.invalid-feedback, .msg, .user-row  {
+.invalid-feedback, .msg, .user-row, nav  {
     font-size: 16px;
+}
+
+nav {
+    margin: 15px auto 0;
 }
 
 .msg {
@@ -64,9 +81,9 @@ a {
 }
 
 .comment-container {
-    border: 2px solid #eadfd9;
+    border: 2px solid var(--container-border-color);
     border-radius: 15px;
-    background-color: #ece6e2;
+    background-color: var(--container-color);
 }
 
 .comment:after {
@@ -80,7 +97,7 @@ a {
 }
 
 .stars {
-    color: black;
+    color: var(--main-color);
     text-decoration: none;
     margin-right: -12px;
 }
@@ -90,7 +107,7 @@ a {
 }
 
 .stars:hover ~ .stars {
-    color: black;
+    color: var(--main-color);
 }
 
 .hide-flash {

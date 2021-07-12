@@ -1,0 +1,9 @@
+:root {
+    --body-color: #343232;
+    --main-color: white;
+    --container-color: #575353;
+    --container-border-color: #403e3e;
+    --nav-color: #763808;
+    --nav-item-hover: #904d1c;
+    --link-hover-color: #c4c1c1;
+}

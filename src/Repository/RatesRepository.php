@@ -51,6 +51,7 @@ class RatesRepository extends ServiceEntityRepository
             ->setParameter('composition', $composition)
             ->getQuery()
             ->getOneOrNullResult();
+
     }
 
     // /**

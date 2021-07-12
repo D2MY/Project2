@@ -5,9 +5,9 @@ namespace App\Repository;
 use App\Entity\Composition;
 use App\Entity\Fandom;
 use App\Entity\Favourite;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @method Favourite|null find($id, $lockMode = null, $lockVersion = null)
@@ -22,7 +22,7 @@ class FavouriteRepository extends ServiceEntityRepository
         parent::__construct($registry, Favourite::class);
     }
 
-    public function isFavouriteCompositionForUser(User $user, Composition $composition)
+    public function isFavouriteCompositionForUser(UserInterface $user, Composition $composition)
     {
         return $this->createQueryBuilder('f')
             ->select('f')
@@ -33,16 +33,15 @@ class FavouriteRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function favouritesForUser(User $user)
+    public function favouritesForUser(UserInterface $user)
     {
         return $this->createQueryBuilder('f')
-            ->select('f, c.title, c.description, fandom.name')
+            ->select('f.id, c.id AS composition_id, c.title, c.description, fandom.name')
             ->leftJoin(Composition::class,'c', 'WITH', 'f.composition = c.id')
             ->leftJoin(Fandom::class,'fandom', 'WITH', 'fandom.id = c.fandom')
             ->where('f.user = :user')
             ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
     }
 
     // /**

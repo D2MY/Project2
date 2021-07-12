@@ -3,7 +3,7 @@
 {% block title %}Admin{% endblock %}
 
 {% block body %}
-<div class="admin-container">
+<div class="admin-container pb-0">
     <div class="d-grid">
         <div class="d-grid user-row">
             <div>ID</div>
@@ -28,6 +28,7 @@
             <div><a href="{{ path('profile') }}?_switch_user={{user.email}}">See profile</a></div>
         </div>
     {% endfor %}
+    {{ knp_pagination_render(users) }}
     </div>
 </div>
 {% endblock %}
