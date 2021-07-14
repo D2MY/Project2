@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Composition;
 use App\Entity\Fandom;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,7 +21,7 @@ class CompositionRepository extends ServiceEntityRepository
         parent::__construct($registry, Composition::class);
     }
 
-    public function getUserCompositionsWithFandoms(int $id)
+    public function getUserCompositionsWithFandoms(int $id) :Query
     {
         return $this->createQueryBuilder('c')
             ->select('c.id, c.title, c.description, f.name')

@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Chapter;
 use App\Entity\Composition;
 use App\Entity\Appraisal;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @method Chapter|null find($id, $lockMode = null, $lockVersion = null)
@@ -23,7 +25,7 @@ class ChapterRepository extends ServiceEntityRepository
         parent::__construct($registry, Chapter::class);
     }
 
-    public function getChaptersForComposition(Composition $composition, UserInterface $user): Query
+    public function getChaptersForComposition(Composition $composition, ?User $user): Query
     {
         return $this->createQueryBuilder('c')
             ->select('c.id, c.title, c.text, l.id AS like_id')

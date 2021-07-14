@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Composition;
+use App\Entity\User;
 use App\Repository\RatesRepository;
 
 class RatesService
@@ -14,14 +15,11 @@ class RatesService
         $this->ratesRepository = $ratesRepository;
     }
 
-    public function getUserRateForComposition($user, Composition $composition) :int
+    public function getUserRateForComposition(User $user, Composition $composition) :int
     {
-        if (is_null($user)) {
-            return 0;
-        }
         $rate = $this->ratesRepository->getUserRateForComposition($user, $composition);
         if (is_null($rate)) {
-            $rate['rate'] = 0;
+            return 0;
         }
         return $rate['rate'];
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Comment;
@@ -70,8 +72,8 @@ class CompositionController extends AbstractController
             $request->query->getInt('page', 1),
             $request->query->getInt('limit', 1),
         );
-        $user? $isFavourite = $this->favouriteRepository->isFavouriteCompositionForUser($user, $composition):$isFavourite = false;
-        $rate = $this->ratesService->getUserRateForComposition($user, $composition);
+        $isFavourite = $user?$this->favouriteRepository->isFavouriteCompositionForUser($user, $composition):false;
+        $rate = $user?$this->ratesService->getUserRateForComposition($user, $composition):0;
         $compositionAverageRate = $this->compositionService->compositionAverageRate($composition);
         $comments = $this->commentRepository->getCommentsForComposition($id);
         $author = $this->userRepository->find($composition->getUser());

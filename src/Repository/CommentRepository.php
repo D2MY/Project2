@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Comment;
@@ -22,10 +24,10 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
-    public function getCommentsForComposition(int $id)
+    public function getCommentsForComposition(int $id): array
     {
         return $this->createQueryBuilder('c')
-            ->select('c, u.firstName, u.secondName')
+            ->select('c.text, c.createdAt, u.firstName, u.secondName')
             ->leftJoin(User::class,'u', 'WITH', 'c.user = u.id')
             ->where('c.composition = :id')
             ->setParameter('id', $id)

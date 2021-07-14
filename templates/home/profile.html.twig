@@ -15,7 +15,6 @@
 
 {% block body %}
     <div class="d-flex flex-column">
-
         <h1 class="align-self-center my-3">Your compositions</h1>
         {% for composition in compositions %}
         <div class="composition-container d-flex flex-column">
@@ -27,7 +26,7 @@
             <p>Fandom: {{ composition.name }}</p>
             <p>Description: {{ composition.description }}</p>
         </div>
-            {% else %}
+        {% else %}
             <p class="align-self-center my-3">No compositions</p>
         {% endfor %}
         {{ knp_pagination_render(compositions) }}

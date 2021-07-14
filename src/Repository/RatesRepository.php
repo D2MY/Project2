@@ -6,6 +6,7 @@ use App\Entity\Composition;
 use App\Entity\Rates;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,6 +22,9 @@ class RatesRepository extends ServiceEntityRepository
         parent::__construct($registry, Rates::class);
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function checkRateByUserForComposition(User $user, Composition $composition)
     {
         return $this->createQueryBuilder('r')
@@ -32,7 +36,7 @@ class RatesRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function getRatesForComposition(Composition $composition)
+    public function getRatesForComposition(Composition $composition): array
     {
         return $this->createQueryBuilder('r')
             ->select('r.rate')
@@ -42,6 +46,9 @@ class RatesRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function getUserRateForComposition(User $user, Composition $composition)
     {
         return $this->createQueryBuilder('r')

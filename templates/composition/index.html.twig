@@ -24,7 +24,7 @@
         <h1 class="align-self-center">{{ chapter.title }}</h1>
         <p>{{ chapter.text|markdown_to_html }}</p>
         {{ knp_pagination_render(chapters) }}
-            {% if app.user %}<a class="align-self-start" href="{{ path('chapter_like', {id: chapter.id}) }}"><span {% if chapter.like_id %}style="color: red"{% endif %}>♥</span></a>{% endif %}
+        {% if app.user %}<a class="align-self-start" href="{{ path('chapter_like', {id: chapter.id}) }}"><span {% if chapter.like_id %}style="color: red"{% endif %}>♥</span></a>{% endif %}
         {% else %}
         <h1 class="align-self-center">No chapters</h1>
         {% endfor %}
@@ -35,14 +35,14 @@
 
     <div class="stars-container mb-3">
         {% for i in 1..5 %}
-            <a href="{{ path('composition_rate', {id: composition.id, rate: loop.index}) }}" class="stars {% if loop.index <= rate %}fild{% endif %}">★</a>
+            <a href="{{ path('composition_rate', {id: composition.id, rate: loop.index}) }}" class="stars{% if loop.index <= rate %} fild{% endif %}">★</a>
         {% endfor %}
     </div>
 
     {% for comment in comments %}
     <div class="comment-container p-2 m-2">
-        <p class="comment" data-date="{{ comment.0.createdAt|date }}">{{ comment.firstName }} {{ comment.secondName }}</p>
-        <p>{{ comment.0.text }}</p>
+        <p class="comment" data-date="{{ comment.createdAt|date }}">{{ comment.firstName }} {{ comment.secondName }}</p>
+        <p>{{ comment.text }}</p>
     </div>
     {% endfor %}
     {% if app.user %}

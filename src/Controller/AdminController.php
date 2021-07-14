@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Repository\UserRepository;
 use App\Service\AdminService;
-use App\Service\Security;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,22 +13,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 
 class AdminController extends AbstractController
 {
-    protected TokenStorageInterface $tokenStorage;
-    protected Security $security;
     protected UserRepository $userRepository;
     protected EntityManagerInterface $em;
     protected AdminService $adminService;
     protected SessionInterface $session;
 
-    public function __construct(TokenStorageInterface $tokenStorage, Security $security, UserRepository $userRepository,
+    public function __construct(UserRepository $userRepository,
                                 EntityManagerInterface $em, AdminService $adminService, SessionInterface $session)
     {
-        $this->tokenStorage = $tokenStorage;
-        $this->security = $security;
         $this->userRepository = $userRepository;
         $this->em = $em;
         $this->adminService = $adminService;
@@ -54,12 +50,12 @@ class AdminController extends AbstractController
     {
         $user = $this->userRepository->find($id);
         if (!$user) {
+            $this->session->getFlashBag()->add('admin', 'User not found');
             return $this->redirectToRoute('admin');
         }
         $user = $this->adminService->changeRole($user);
-        $this->em->persist($user);
         $this->em->flush();
-        $this->session->getFlashBag()->add('', 'User edited successfully');
+        $this->session->getFlashBag()->add('admin', 'User edited successfully');
 
         return $this->redirectToRoute('admin');
     }
@@ -70,7 +66,7 @@ class AdminController extends AbstractController
         $user = $this->userRepository->find($id);
         $this->em->remove($user);
         $this->em->flush();
-        $this->session->getFlashBag()->add('', 'User deleted successfully');
+        $this->session->getFlashBag()->add('admin', 'User deleted successfully');
 
         return $this->redirectToRoute('admin');
     }

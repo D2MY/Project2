@@ -41,16 +41,17 @@ class CompositionService
     {
         $diff = date_diff(new \DateTime(), $composition->getLastRateUpdate(), true);
         if ($diff->y || $diff->m || $diff->d || $diff->h || $diff->i > 15) {
-            $rates = $this->rateRepository->findByComposition($composition);
+            $rates = $this->rateRepository->getRatesForComposition($composition);
             $averageRate = 0;
             if (count($rates) === 0) {
                 return $averageRate;
             }
             foreach ($rates as $rate) {
-                $averageRate += $rate->getRate();
+                $averageRate += $rate['rate'];
             }
             $countRates = count($rates);
             $averageRate /= $countRates;
+            $averageRate = round($averageRate, 1);
             $composition->setAverageRate($averageRate);
             $composition->setLastRateUpdate(new \DateTime());
             $this->em->persist($composition);

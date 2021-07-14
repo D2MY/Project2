@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Composition;
 use App\Entity\Fandom;
 use App\Entity\Favourite;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @method Favourite|null find($id, $lockMode = null, $lockVersion = null)
@@ -22,7 +26,10 @@ class FavouriteRepository extends ServiceEntityRepository
         parent::__construct($registry, Favourite::class);
     }
 
-    public function isFavouriteCompositionForUser(UserInterface $user, Composition $composition)
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function isFavouriteCompositionForUser(User $user, Composition $composition)
     {
         return $this->createQueryBuilder('f')
             ->select('f')
@@ -33,7 +40,7 @@ class FavouriteRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function favouritesForUser(UserInterface $user)
+    public function favouritesForUser(User $user): Query
     {
         return $this->createQueryBuilder('f')
             ->select('f.id, c.id AS composition_id, c.title, c.description, fandom.name')
